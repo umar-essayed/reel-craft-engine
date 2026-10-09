@@ -22,10 +22,10 @@ SOURCE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 echo -e "${YELLOW}[*] Installing dependencies via pip...${NC}"
 if command -v pip3 &> /dev/null; then
-    pip3 install -r "$SOURCE_DIR/requirements.txt" --quiet
+    pip3 install -r "$SOURCE_DIR/requirements.txt" --break-system-packages --quiet 2>/dev/null || pip3 install -r "$SOURCE_DIR/requirements.txt" --quiet
     echo -e "${GREEN}[✓] Python dependencies installed.${NC}"
 elif command -v pip &> /dev/null; then
-    pip install -r "$SOURCE_DIR/requirements.txt" --quiet
+    pip install -r "$SOURCE_DIR/requirements.txt" --break-system-packages --quiet 2>/dev/null || pip install -r "$SOURCE_DIR/requirements.txt" --quiet
     echo -e "${GREEN}[✓] Python dependencies installed.${NC}"
 else
     echo -e "${YELLOW}[!] pip not found. Ensure required Python packages are installed.${NC}"
@@ -41,8 +41,10 @@ fi
 # Install to Antigravity / Gemini CLI
 echo -e "${YELLOW}[*] Deploying to Google Antigravity (~/.gemini/config/skills)...${NC}"
 mkdir -p "$GEMINI_SKILLS_DIR"
-rm -rf "$GEMINI_SKILLS_DIR/$SKILL_NAME"
-cp -r "$SOURCE_DIR" "$GEMINI_SKILLS_DIR/$SKILL_NAME"
+if [ "$SOURCE_DIR" != "$GEMINI_SKILLS_DIR/$SKILL_NAME" ]; then
+    rm -rf "$GEMINI_SKILLS_DIR/$SKILL_NAME"
+    cp -r "$SOURCE_DIR" "$GEMINI_SKILLS_DIR/$SKILL_NAME"
+fi
 echo -e "${GREEN}[✓] Deployed to Antigravity CLI.${NC}"
 
 # Deploy to Claude Code
