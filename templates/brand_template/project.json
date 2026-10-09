@@ -1,0 +1,108 @@
+{
+  "project_name": "MyBrand_Launch_Reel",
+  "settings": {
+    "width": 1080,
+    "height": 1920,
+    "fps": 30,
+    "total_duration": 12.0
+  },
+  "brand": {
+    "name": "اسم البراند",
+    "tagline": "شعار البراند التسويقي",
+    "website": "yourbrand.com",
+    "search_query": "اسم البراند",
+    "cta_text": "ابدأ الآن",
+    "logo": "assets/logo.png",
+    "colors": {
+      "primary": "#FF8A00",
+      "secondary": "#0143A3",
+      "accent": "#00D2FF",
+      "background": "#081426",
+      "text_primary": "#FFFFFF",
+      "text_secondary": "#F5F5F5",
+      "danger": "#FF5F56",
+      "highlight": "#FFBD2E"
+    }
+  },
+  "background_image": "assets/images.jpeg",
+  "audio": {
+    "voiceover": "audio/voiceover.mp3",
+    "hook_boost_db": 3.5,
+    "hook_duration": 3.0,
+    "sfx": [
+      { "time": 0.00, "file": "hit", "volume": 0.28 },
+      { "time": 1.20, "file": "whoosh", "volume": 0.25 },
+      { "time": 3.00, "file": "shutter", "volume": 0.30 },
+      { "time": 6.50, "file": "zoom_in", "volume": 0.25 },
+      { "time": 9.50, "file": "vision", "volume": 0.28 }
+    ]
+  },
+  "scenes": [
+    {
+      "id": "scene_01",
+      "start": 0.0,
+      "end": 3.0,
+      "type": "standard",
+      "texts": [
+        {
+          "text": "هل تبحث عن أفضل نتيجة لمشروعك؟",
+          "y": 620,
+          "size": 72,
+          "color": "primary",
+          "animation": "typewriter",
+          "speed": 1.8
+        }
+      ]
+    },
+    {
+      "id": "scene_02",
+      "start": 3.0,
+      "end": 6.5,
+      "type": "standard",
+      "texts": [
+        {
+          "text": "حلول ذكية وسريعة توفر وقتك ومجهودك",
+          "y": 700,
+          "size": 70,
+          "color": "text_primary",
+          "animation": "typewriter",
+          "speed": 1.5
+        }
+      ]
+    },
+    {
+      "id": "scene_03",
+      "start": 6.5,
+      "end": 9.5,
+      "type": "standard",
+      "texts": [
+        {
+          "text": "جودة احترافية وتجربة مستخدم لا مثيل لها",
+          "y": 700,
+          "size": 70,
+          "color": "accent",
+          "animation": "fade_up",
+          "speed": 1.5
+        }
+      ]
+    },
+    {
+      "id": "scene_04",
+      "start": 9.5,
+      "end": 12.0,
+      "type": "cta",
+      "texts": [
+        {
+          "text": "انضم إلينا اليوم وابدأ مجاناً!",
+          "y": 640,
+          "size": 74,
+          "color": "primary",
+          "animation": "elastic_bounce",
+          "speed": 1.8
+        }
+      ]
+    }
+  ],
+  "reel_number": "#001",
+  "background_preset": "cyber_grid"
+}

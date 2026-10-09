@@ -1,0 +1,9 @@
+numpy>=1.24.0
+Pillow>=10.0.0
+opencv-python-headless>=4.8.0
+openai-whisper>=20231117
+arabic-reshaper>=3.0.0
+python-bidi>=0.4.2
+scipy>=1.11.0
+tqdm>=4.66.0
+pygments>=2.16.0
