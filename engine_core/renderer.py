@@ -101,7 +101,13 @@ def get_base_background(config: ProjectConfig, t: float = 0.0, preset_override: 
         return _BG_CACHE[cache_key].copy()
 
     # Procedural background shader or preset
-    from ..library.backgrounds import render_background_preset
+    try:
+        from ..library.backgrounds import render_background_preset
+    except (ImportError, ValueError):
+        try:
+            from library.backgrounds import render_background_preset
+        except (ImportError, ValueError):
+            from reel_engine.library.backgrounds import render_background_preset
     preset_name = preset_override or getattr(config, "background_preset", "cyber_grid") or "cyber_grid"
     
     # Cache static background only if not animated preset
@@ -879,17 +885,38 @@ def render_frame_by_config(config: ProjectConfig, frame_idx: int) -> Image.Image
             scene_layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
             scene_layer = render_scene(scene_layer, active_scene, config, t)
 
-            # Apply continuous camera drift ONLY to foreground elements (text, cards, icons)
-            # The background grid stays completely locked, stable and comfortable for the eye
-            if getattr(active_scene, "camera_drift", True) and active_scene.scene_type != "cta":
+            # Advanced After Effects Virtual Camera Engine (Push-in, Whip-Pan, Dutch Tilt, 3D Orbit, Motion Blur)
+            if active_scene.scene_type != "cta":
+                try:
+                    from .ae_camera import AECameraEngine
+                except ImportError:
+                    try:
+                        from ae_camera import AECameraEngine
+                    except ImportError:
+                        AECameraEngine = None
+
                 dur = max(0.01, active_scene.end - active_scene.start)
-                drift_p = min(1.0, max(0.0, (t - active_scene.start) / dur))
-                d_scale = 1.0 + 0.024 * drift_p
-                sw, sh = int(w * d_scale), int(h * d_scale)
-                res = scene_layer.resize((sw, sh), Image.Resampling.BILINEAR)
-                ox = (w - sw) // 2
-                oy = (h - sh) // 2
-                scene_layer = res.crop((-ox, -oy, w - ox, h - oy))
+                t_in_scene = max(0.0, t - active_scene.start)
+
+                if AECameraEngine:
+                    scene_meta = {
+                        "camera": getattr(active_scene, "camera", {
+                            "type": getattr(active_scene, "camera_motion", "push_in"),
+                            "intensity": float(getattr(active_scene, "camera_intensity", 1.0)),
+                            "handheld": True,
+                            "shake": getattr(active_scene, "screen_shake", None)
+                        })
+                    }
+                    cam_state = AECameraEngine.evaluate_camera(scene_meta, t_in_scene, dur)
+                    scene_layer = AECameraEngine.apply_camera_to_canvas(scene_layer, cam_state)
+                elif getattr(active_scene, "camera_drift", True):
+                    drift_p = min(1.0, max(0.0, t_in_scene / dur))
+                    d_scale = 1.0 + 0.024 * drift_p
+                    sw, sh = int(w * d_scale), int(h * d_scale)
+                    res = scene_layer.resize((sw, sh), Image.Resampling.BILINEAR)
+                    ox = (w - sw) // 2
+                    oy = (h - sh) // 2
+                    scene_layer = res.crop((-ox, -oy, w - ox, h - oy))
 
             canvas = Image.alpha_composite(canvas, scene_layer)
 
